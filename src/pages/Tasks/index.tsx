@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button } from 'react-bootstrap';
+import { useHistory } from 'react-router-dom';
 import api from '../../services/api';
 import moment from 'moment';
+import './index.css';
  
 interface ITask{
     id: number;
@@ -19,6 +21,7 @@ interface ITask{
 const Tasks: React.FC = () => {
  
     const [tasks, setTasks] = useState<ITask[]>([])
+    const history = useHistory()
  
     useEffect(() => {
         loadTasks()
@@ -34,11 +37,22 @@ const Tasks: React.FC = () => {
         return moment(date).format('DD/MM/YYYY')
     }
  
+    function newTask(){
+        history.push('/alunos_cadastro')
+    }
+ 
+    function editTask(id: number){
+        history.push(`/alunos_cadastro/${id}`)
+    }
+ 
     return (
         
         <div className="container">
             <br />
-            <h1>Página de Tarefas</h1>
+            <div className="task-header">
+                <h1>Alunos</h1>
+                <Button variant="dark" size="sm" onClick={newTask}>Novo Aluno</Button>
+            </div>
             <br />
             <Table striped bordered hover className="text-center">
                 <thead>
@@ -69,10 +83,10 @@ const Tasks: React.FC = () => {
                                 <td>{formatDate(task.updated_at)}</td>
                                 <td>{task.finished ? "Finalizado" : "Pendente"}</td>
                                 <td>
-                                    <Button size="sm" variant="primary">Editar</Button>{' '} <h1></h1>
-                                    <Button size="sm" variant="success">Finalizar</Button>{' '}<h1></h1>
-                                    <Button size="sm" variant="warning">Visualizar</Button>{' '}<h1></h1>
-                                    <Button size="sm" variant="danger">Remover</Button>{' '}<h1></h1>
+                                    <Button size="sm" variant="primary" onClick={() => editTask(task.id)}>Editar</Button>{' '}
+                                    <Button size="sm" variant="success">Finalizar</Button>{' '}
+                                    <Button size="sm" variant="warning">Visualizar</Button>{' '}
+                                    <Button size="sm" variant="danger">Remover</Button>{' '}
                                 </td>
                             </tr>
                         ))
