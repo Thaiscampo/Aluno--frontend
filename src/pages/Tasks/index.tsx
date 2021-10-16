@@ -9,10 +9,9 @@ interface ITask{
     id: number;
     nome: string;
     ra: string;
-    dataDeNascimento: string;
+    data: string;
     endereco: string;
-    matriculado: boolean;
-    idade: number;
+    idade: string;
     finished: boolean;
     created_at: Date;
     updated_at: Date;
@@ -45,6 +44,20 @@ const Tasks: React.FC = () => {
         history.push(`/alunos_cadastro/${id}`)
     }
  
+    function viewTask(id: number){
+        history.push(`/alunos/${id}`)
+    }
+ 
+    async function finishedTask(id: number){
+        await api.patch(`/tasks/${id}`)
+        loadTasks()
+    }
+ 
+    async function deleteTask(id: number){
+        await api.delete(`/tasks/${id}`)
+        loadTasks()
+    }
+ 
     return (
         
         <div className="container">
@@ -62,7 +75,6 @@ const Tasks: React.FC = () => {
                     <th>Ra</th>
                     <th>Data de Nascimento</th>
                     <th>Endereço</th>
-                    <th>Matriculado(a)</th>
                     <th>Idade</th>
                     <th>Data de Atualização</th>
                     <th>Status</th>
@@ -76,17 +88,16 @@ const Tasks: React.FC = () => {
                                 <td>{task.id}</td>
                                 <td>{task.nome}</td>
                                 <td>{task.ra}</td>
-                                <td>{task.dataDeNascimento}</td>
+                                <td>{task.data}</td>
                                 <td>{task.endereco}</td>
-                                <td>{task.finished ? "Matriculado(a)" : "Aluno não matriculado"}</td>
                                 <td>{task.idade}</td>
                                 <td>{formatDate(task.updated_at)}</td>
                                 <td>{task.finished ? "Finalizado" : "Pendente"}</td>
                                 <td>
-                                    <Button size="sm" variant="primary" onClick={() => editTask(task.id)}>Editar</Button>{' '}
-                                    <Button size="sm" variant="success">Finalizar</Button>{' '}
-                                    <Button size="sm" variant="warning">Visualizar</Button>{' '}
-                                    <Button size="sm" variant="danger">Remover</Button>{' '}
+                                    <Button size="sm" disabled={task.finished} variant="primary" onClick={() => editTask(task.id)}>Editar</Button>{' '}
+                                    <Button size="sm" disabled={task.finished} variant="success" onClick={() => finishedTask(task.id)}>Finalizar</Button>{' '}
+                                    <Button size="sm" variant="warning" onClick={() => viewTask(task.id)}>Visualizar</Button>{' '}
+                                    <Button size="sm" variant="danger" onClick={() => deleteTask(task.id)}>Remover</Button>{' '}
                                 </td>
                             </tr>
                         ))
@@ -98,3 +109,4 @@ const Tasks: React.FC = () => {
 }
  
 export default Tasks;
+ 
